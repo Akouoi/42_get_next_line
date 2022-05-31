@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouoi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 17:52:38 by akouoi            #+#    #+#             */
-/*   Updated: 2022/05/27 19:09:46 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/05/31 14:26:04 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@ char	*supercat(char *dest, char *src, size_t lu)
 
 	j = ft_strlen(dest);
 	i = 0;
-	while (i < lu || (src[i] && src[i] != '\n'))
+	while (i < lu && (src[i] && src[i] != '\n'))
 	{
 		dest[j] = src[i];
 		j++;
 		i++;
 	}
-	if (i != lu && src[i] == '\n')
-		dest[j++] = src[i];
+	dest[j] = '\0';
 	return (dest);
 }
 
@@ -66,36 +65,42 @@ char	*free_return(char *line, int lu, char *tmp)
 
 char	*get_next_line(int fd)
 {
-	static char	tmp[BUFFER_SIZE + 1];
+	static char	tmp[1024][BUFFER_SIZE + 1];
 	char		*line;
-	char		*buf;
+	int i =0;
 	int			lu;
 
-	if (BUFFER_SIZE < 1 || read(fd, tmp, 0) == -1)
+	if (fd< 0 || BUFFER_SIZE < 1 || read(fd, tmp[fd], 0) == -1)
 		return (NULL);
 	lu = BUFFER_SIZE;
 	line = ft_calloc(1024, sizeof(char));
-	buf = ft_calloc (BUFFER_SIZE + 1, sizeof(char));
-	if (*tmp)
-		ft_strlcpy(line, tmp, BUFFER_SIZE);
-	if (!buf || !line || fd < 0)
+	if (!line)
 		return (NULL);
+	if (tmp[fd])
+		ft_strlcpy(line, tmp[fd], BUFFER_SIZE);
 	while (lu)
 	{
-		ft_bzero(buf, BUFFER_SIZE + 1);
-		lu = read(fd, buf, BUFFER_SIZE);
-		line = supercat(line, buf, lu);
-		if (ft_strchr(buf, '\n'))
+		lu = read(fd, tmp[fd], BUFFER_SIZE);
+		tmp[fd][lu] = '\0';
+		printf("\n==================buf [%d] ; %s, lu = %i\n", ++i, tmp[fd], lu);
+
+		line = supercat(line, tmp[fd], lu);
+		printf("\n line [%d] == %s\n", fd, line);
+		
+		if (ft_strchr(tmp[fd], '\n'))
 		{
-			ft_strlcpy(tmp, ft_strchr(buf, '\n'), BUFFER_SIZE);
-			ft_strtrim(tmp, "\n");
+			ft_strlcpy(tmp[fd], ft_strchr(tmp[fd], '\n'), BUFFER_SIZE);
+			printf("\n tmp [%d] == %s\n", fd, tmp[fd]);
+			
+			ft_strtrim(tmp[fd], "\n");
+			printf("\n tmp [%d] == %s\n", fd, tmp[fd]);
+
 			break ;
 		}
 	}
-	free(buf);
-	return (free_return(line, lu, tmp));
+	return (free_return(line, lu, tmp[fd]));
 }
-/*
+
 int	main(int ac, char **av)
 {
 	int		fd;
@@ -115,4 +120,4 @@ int	main(int ac, char **av)
 	}
 	close(fd);
 	return (0);
-}*/
+}

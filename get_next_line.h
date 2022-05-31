@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouoi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 18:27:12 by akouoi            #+#    #+#             */
-/*   Updated: 2022/05/27 18:27:18 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/05/31 14:28:05 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_bzero(void *s, size_t n);
 size_t	ft_strlen(const char *str);
 void	ft_strtrim(char *s1, char *c);
 char	*ft_strchr(char *s, int c);
-size_t	ft_strlcpy(char *dest, const char *src, size_t size);
+void	ft_strlcpy(char *dest, char *src, size_t size);
 void	*ft_calloc(size_t nmemb, size_t size);
 
 #endif

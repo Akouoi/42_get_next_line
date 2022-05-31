@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akouoi <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 18:25:50 by akouoi            #+#    #+#             */
-/*   Updated: 2022/05/27 19:03:07 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/05/31 14:27:28 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ size_t	ft_strlen(const char *str)
 	if (!str)
 		return (0);
 	i = 0;
-	while (str[i] && str[i] != '\n')
+	while (str[i])// && str[i] != '\n')
 		i++;
 	return (i);
 }
@@ -72,18 +72,18 @@ char	*ft_strchr(char *s, int c)
 	return (NULL);
 }
 
-size_t	ft_strlcpy(char *dest, const char *src, size_t size)
+
+void	ft_strlcpy(char *dest, char *src, size_t size)
 {
 	size_t	i;
 
 	i = 0;
 	if (size == 0)
-		return (ft_strlen(src));
+		return ;
 	while (src[i] && i < size)
 	{
 		dest[i] = src[i];
 		i++;
 	}
 	dest[i] = '\0';
-	return (ft_strlen(src));
 }
