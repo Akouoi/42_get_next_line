@@ -6,7 +6,7 @@
 /*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 18:27:12 by akouoi            #+#    #+#             */
-/*   Updated: 2022/05/31 14:28:05 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/06/01 10:59:25 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,5 @@ size_t	ft_strlen(const char *str);
 void	ft_strtrim(char *s1, char *c);
 char	*ft_strchr(char *s, int c);
 void	ft_strlcpy(char *dest, char *src, size_t size);
-void	*ft_calloc(size_t nmemb, size_t size);
 
 #endif

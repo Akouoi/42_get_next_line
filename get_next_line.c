@@ -6,7 +6,7 @@
 /*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 17:52:38 by akouoi            #+#    #+#             */
-/*   Updated: 2022/06/01 10:51:14 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/06/01 10:59:39 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ char	*get_next_line(int fd)
 	ft_readline(lu, fd, line, tmp[fd]);
 	return (free_return(line, lu, tmp[fd]));
 }
-/*
+
 int	main(int ac, char **av)
 {
 	int fd;
@@ -117,4 +117,3 @@ int	main(int ac, char **av)
 		return (0);
 	}
 }
-*/
