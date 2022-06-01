@@ -6,7 +6,7 @@
 /*   By: akouoi <akouoi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/27 17:52:38 by akouoi            #+#    #+#             */
-/*   Updated: 2022/05/31 14:26:04 by akouoi           ###   ########.fr       */
+/*   Updated: 2022/06/01 10:51:14 by akouoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,43 +19,36 @@ char	*supercat(char *dest, char *src, size_t lu)
 
 	j = ft_strlen(dest);
 	i = 0;
-	while (i < lu && (src[i] && src[i] != '\n'))
+	while (i < lu && src[i] && src[i] != '\n')
 	{
 		dest[j] = src[i];
 		j++;
 		i++;
 	}
+	if (src[i] == '\n')
+		dest[j++] = src[i];
 	dest[j] = '\0';
 	return (dest);
 }
 
-void	ft_strtrim(char *s1, char *c)
+char	*superjoin(char *s1, char *s2)
 {
-	size_t	i;
-	size_t	j;
-	size_t	len;
+	char	*strjoin;
 
-	len = ft_strlen(s1);
-	i = 0;
-	j = 0;
-	if (s1[i] == *c)
-		i++;
-	while (j < len)
-	{
-		s1[j] = s1[i + j];
-		j++;
-	}
-	s1[j] = '\0';
+	strjoin = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!strjoin)
+		return (NULL);
+	ft_strlcpy(strjoin, s1, ft_strlen(s1) + 1);
+	supercat(strjoin, s2, ft_strlen(s2));
+	free (s1);
+	return (strjoin);
 }
 
 char	*free_return(char *line, int lu, char *tmp)
 {
 	if (!lu && *line)
-	{
-		bzero(tmp, BUFFER_SIZE);
 		return (line);
-	}
-	if (!lu)
+	if (!lu && !ft_strchr(tmp, '\n'))
 	{
 		free(line);
 		return (NULL);
@@ -63,61 +56,65 @@ char	*free_return(char *line, int lu, char *tmp)
 	return (line);
 }
 
-char	*get_next_line(int fd)
+void	ft_readline(int lu, int fd, char *line, char *fd)
 {
-	static char	tmp[1024][BUFFER_SIZE + 1];
-	char		*line;
-	int i =0;
-	int			lu;
-
-	if (fd< 0 || BUFFER_SIZE < 1 || read(fd, tmp[fd], 0) == -1)
-		return (NULL);
-	lu = BUFFER_SIZE;
-	line = ft_calloc(1024, sizeof(char));
-	if (!line)
-		return (NULL);
-	if (tmp[fd])
-		ft_strlcpy(line, tmp[fd], BUFFER_SIZE);
 	while (lu)
 	{
 		lu = read(fd, tmp[fd], BUFFER_SIZE);
 		tmp[fd][lu] = '\0';
-		printf("\n==================buf [%d] ; %s, lu = %i\n", ++i, tmp[fd], lu);
-
-		line = supercat(line, tmp[fd], lu);
-		printf("\n line [%d] == %s\n", fd, line);
-		
+		line = superjoin(line, tmp[fd]);
 		if (ft_strchr(tmp[fd], '\n'))
 		{
-			ft_strlcpy(tmp[fd], ft_strchr(tmp[fd], '\n'), BUFFER_SIZE);
-			printf("\n tmp [%d] == %s\n", fd, tmp[fd]);
-			
-			ft_strtrim(tmp[fd], "\n");
-			printf("\n tmp [%d] == %s\n", fd, tmp[fd]);
-
-			break ;
+			ft_strlcpy(tmp[fd], ft_strchr(tmp[fd], '\n') + 1, BUFFER_SIZE);
+			return ;
 		}
 	}
+	return ;
+}
+
+char	*get_next_line(int fd)
+{
+	static char	tmp[FOPEN_MAX][BUFFER_SIZE + 1];
+	char		*line;
+	int			lu;
+
+	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, tmp[fd], 0) == -1)
+		return (NULL);
+	lu = 1;
+	line = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!line)
+		return (NULL);
+	*line = '\0';
+	if (ft_strchr(tmp[fd], '\n'))
+	{
+		line = superjoin(line, tmp[fd]);
+		ft_strlcpy(tmp[fd], ft_strchr(tmp[fd], '\n') + 1, BUFFER_SIZE);
+		return (free_return(line, lu, tmp[fd]));
+	}
+	if (tmp[fd])
+		ft_strlcpy(line, tmp[fd], BUFFER_SIZE);
+	ft_readline(lu, fd, line, tmp[fd]);
 	return (free_return(line, lu, tmp[fd]));
 }
-
+/*
 int	main(int ac, char **av)
 {
-	int		fd;
-	char	*str;
-	int		i;
-
-	i = 0;
-	if (ac)
-		fd = open(av[1], O_RDONLY);
-	while (i < atoi(av[2]))
+	int fd;
+	char *str;
+	int i=0;
+	int f=2;
+	while(f < ac)
 	{
-		str = get_next_line(fd);
-		printf("\n==========\ngnl  = %s\n==========\n", str);
-		free(str);
-		i++;
-		printf("\n[%d]\n", i);
+		fd = open(av[f], O_RDONLY);
+		while (i < atoi(av[1]))
+		{
+			str = get_next_line(fd);
+			printf("gnl [%d] :%s", i, str);
+			free(str);
+			i++;
+		}
+		close (fd);
+		return (0);
 	}
-	close(fd);
-	return (0);
 }
+*/
